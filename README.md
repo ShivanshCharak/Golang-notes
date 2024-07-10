@@ -78,4 +78,82 @@ func main() {
 
 }
 ```
-		
+## For select loop
+
+- Unbufferd channel: these channels are synchronous because the exchange of the message take place in instant
+- Buffered channel: These channel are async we are using queue like utility where we can send our data and forget about it
+
+![alt text](image.png)
+- After sending  the data to the unbuffered channel the go routine will get blocked until the data will be received by the go routine
+
+```
+package main
+
+func main() {
+	// charChannel := make(chan string) // Unbuffered channel
+	charChannel := make(chan string, 3) // buffered channel
+
+}
+
+```
+![alt text](image-1.png)
+- It is sending all the data to the queue and the sender isnt getting blocked at the same time
+```package main
+
+import "fmt"
+
+func main() {
+	// charChannel := make(chan string) // Unbuffered channel
+	charChannel := make(chan string, 3) // buffered channel
+	chars := []string{"a", "b", "c"}
+	for _, s := range chars {
+		select {
+		case charChannel <- s:
+		}
+	}
+	close(charChannel)
+	for result := range charChannel {
+		fmt.Println(result)
+	}
+}
+```
+## The done channel
+
+## Pipeline
+![alt text](image-2.png)
+```
+package main
+
+import "fmt"
+
+func sliceToChannel(nums []int) <-chan int {
+	out := make(chan int)
+	go func() {
+		for _, n := range nums {
+			out <- n
+		}
+		close(out)
+	}()
+	return out
+}
+func sq(in <-chan int) <-chan int {
+	out := make(chan int)
+	go func() {
+		for n := range in {
+			out <- n * n
+		}
+		close(out)
+	}()
+	return out
+}
+func main() {
+	nums := []int{2, 3, 4, 5, 6}
+	// stage 1
+	dataChannel := sliceToChannel(nums)
+	// stage 2
+	finalChannel := sq(dataChannel)
+	for n := range finalChannel {
+		fmt.Println(n)
+	}
+}
+```
