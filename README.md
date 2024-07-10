@@ -50,3 +50,32 @@ func main() {
 	fmt.Println("hey")
 }
 ```
+## Select
+
+- In Go, the select statement is used to handle multiple channel operations simultaneously. It allows a goroutine to wait on multiple communication operations. Here’s a breakdown of what select does and how it relates to concurrency patterns:
+
+    - Multiplexing Operations: select lets you wait on multiple communication operations (send or receive) simultaneously. This is useful when you have multiple channels and want to proceed as soon as any one of them is ready.
+
+    - Non-Blocking Operations: If none of the channels are ready, a select statement with default case allows you to execute fallback logic or continue without blocking.
+```
+func main() {
+	channel := make(chan int)
+	anotherChannel := make(chan string)
+	go func() {
+		data := 445 + 67 + 43*76
+		channel <- data
+	}()
+	go func() {
+		data := "kflefe"
+		anotherChannel <- data
+	}()
+	select {
+	case msgFromChannel := <-channel:
+		fmt.Println(msgFromChannel)
+	case msgFromChannel := <-anotherChannel:
+		fmt.Println(msgFromChannel)
+	}
+
+}
+```
+		
