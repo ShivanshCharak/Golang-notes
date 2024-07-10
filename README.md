@@ -26,6 +26,27 @@ func main() {
 }
 ```
 - Go routines are just like async function in js 
-- Go keywork tells the function to fork it and and we have to use the time.sleep method which tell the function to join it back with the main function
+- Go keywork tells the function to fork it
+- the go routines are independent of the function
 
 ![Fork join model](./fork-join-model.png)
+
+## Channels
+
+- By using channels we can tell the function to join the forked go routines
+- Go routines are indepenedent of each other so what if one go routine want data from another go routine, Here we use Channels
+- we can make one go rouitne to read from the channel and othetr to write into the channel
+```package main
+func main() {
+	myChannel := make(chan int)
+	go func() {
+		add := 3 + 4*7 + 9
+		myChannel <- add
+	}()
+	//  invoking now cuz its a annonymous function
+	msg := <-myChannel
+
+	fmt.Println(msg)
+	fmt.Println("hey")
+}
+```

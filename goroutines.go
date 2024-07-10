@@ -8,6 +8,8 @@ import (
 func someFunc(num string) {
 	fmt.Println(num)
 }
+
+// fork join model
 func main() {
 	go someFunc("1")
 	go someFunc("5")
@@ -16,6 +18,6 @@ func main() {
 	// here it is not rejoinsing with main but if we use time.sleep it will rejoin with the main function
 	// go is juts like async in golang these ae goroutines
 	time.Sleep(time.Second * 2)
-
 	fmt.Println("hey")
+
 }
